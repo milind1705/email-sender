@@ -10,18 +10,25 @@ const auth = {
 
 const transporter = nodemailer.createTransport(mailGun(auth));
 
-const mailOption = {
-    from: process.env.FROM,
-    to: process.env.TO,
-    subject: 'testing',
-    text:'this is taste mail'
-};
+const sendMail = (email, subject, text, cb) => {
+    const mailOption = {
+        from: process.env.FROM,
+        to: email,
+        subject,
+        text
+    };
+    
+    transporter.sendMail(mailOption, (err, data) => {
+        if(err) {
+            console.log(err);
+            return cb(err, null)
+        }else {
+            console.log('messagesent!!!')
+            console.log(data)
+            return cb(null, data)
+        }
+    })
+}
 
-transporter.sendMail(mailOption, (err, data) => {
-    if(err) {
-        console.log(err);
-    }else {
-        console.log('messagesent!!!')
-        console.log(data)
-    }
-})
+module.exports = sendMail;
+
